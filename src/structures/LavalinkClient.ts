@@ -20,7 +20,11 @@ export default class LavalinkClient extends Manager {
     super(client, [nodeConfig])
 
     this.trackCache = {}
-    client.once('ready', () => this.connect().catch(() => process.exit(1)))
+    client.once('ready', () =>
+      this.connect().catch(() => {
+        console.log('cannot resolve lavalink instance')
+        process.exit(1)
+      }))
   }
 
   public async getTrack (search: string) {
