@@ -40,13 +40,8 @@ export default class RestServer {
   }
 
   private async deleteCache (req: Request, res: Response) {
-    const { channel } = req.query
-    if (!channel || typeof channel !== 'string') {
-      res.status(400).send({ success: false, message: 'channel not valid' })
-      return
-    }
-
-    this.db.clearCache(channel)
+    await this.db.fetchMarkedChannels()
+    res.status(200).send({ success: true })
   }
 
   private async createConnection (req: Request, res: Response) {

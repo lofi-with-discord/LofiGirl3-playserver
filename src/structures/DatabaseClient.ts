@@ -28,17 +28,12 @@ export default class DatabaseClient {
     return url
   }
 
-  public async isMarked (channel: VoiceChannel) {
-    if (this.markCache.includes(channel.id)) return true
-
-    const [isMarked] = await this.db.select('*').where('id', channel.id).from('channels').limit(1)
-    if (isMarked) this.markCache.push(channel.id)
-
-    return !!isMarked
+  public async fetchMarkedChannels (): Promise<string[]> {
+    const markedChannels = await this.db.select('*').from('channels')
+    this.markCache = markedChannels.map((channel: { id: string }) => channel.id)
+    return this.markCache
   }
 
-  public async clearCache (channelID: string) {
-    const index = this.markCache.indexOf(channelID)
-    this.markCache.splice(index)
-  }
+  public isMarked = (channel: VoiceChannel) =>
+    this.markCache.includes(channel.id)
 }
