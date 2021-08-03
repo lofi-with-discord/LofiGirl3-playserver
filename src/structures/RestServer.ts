@@ -22,6 +22,7 @@ export default class RestServer {
 
   public listen () {
     this.app.use(this.authorization)
+    this.app.get('/', this.healthCheck)
     this.app.delete('/cache', this.deleteCache.bind(this))
     this.app.post('/connection', this.createConnection.bind(this))
     this.app.delete('/connection', this.deleteConnection.bind(this))
@@ -39,7 +40,10 @@ export default class RestServer {
     res.status(401).send({ success: false, message: 'Unauthorized or not valid' })
   }
 
-  private async deleteCache (req: Request, res: Response) {
+  private healthCheck = (_: Request, res: Response) =>
+    res.status(200).send({ success: true })
+
+  private async deleteCache (_: Request, res: Response) {
     await this.db.fetchMarkedChannels()
     res.status(200).send({ success: true })
   }
