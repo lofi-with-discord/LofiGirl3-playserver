@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "nodemon -e .ts --exec \"tsc && node . || exit 1\"",
+    "shard": "node ./native-utils/sharding.js",
     "start": "node ./dist"
   },
   "devDependencies": {
