@@ -27,7 +27,8 @@ export default class RestServer {
     this.app.post('/connection', this.createConnection.bind(this))
     this.app.delete('/connection', this.deleteConnection.bind(this))
 
-    this.app.listen(process.env.CONTROL_PORT || '6703')
+    this.app.listen((Number(process.env.CONTROL_PORT) + (this.bot.shard?.ids[0] || 0)) || '6703'
+      , () => console.log('listening control port :' + (Number(process.env.CONTROL_PORT) + (this.bot.shard?.ids[0] || 0)) || '6703'))
   }
 
   private authorization (req: Request, res: Response, next: NextFunction) {
