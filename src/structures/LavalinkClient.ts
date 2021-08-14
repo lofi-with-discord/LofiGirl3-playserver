@@ -44,9 +44,6 @@ export default class LavalinkClient extends Manager {
   }
 
   public async play (channel: VoiceChannel, track: string) {
-    const pp = await this.players.get(channel.guild.id)
-    if (channel.members.has(this.client.user?.id!) && pp?.track === track) return
-
     await this.stop(channel)
     const player = await this.join({ guild: channel.guild.id, channel: channel.id, node: 'main' })
     await player.play(track)
