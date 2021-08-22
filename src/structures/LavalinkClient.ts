@@ -45,8 +45,10 @@ export default class LavalinkClient extends Manager {
 
   public async play (channel: VoiceChannel, track: string) {
     await this.stop(channel)
-    const player = await this.join({ guild: channel.guild.id, channel: channel.id, node: 'main' })
-    await player.play(track)
+    setTimeout(async () => {
+      const player = await this.join({ guild: channel.guild.id, channel: channel.id, node: 'main' })
+      await player.play(track)
+    }, 1000)
   }
 
   public async stop (channel: VoiceChannel) {
