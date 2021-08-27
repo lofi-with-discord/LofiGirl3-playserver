@@ -69,6 +69,7 @@ export default class RestServer {
 
     const theme = await this.db.getThemeURL(voiceChannel)
     const track = await this.lavalink.getTrack(theme)
+    if (!track) return
 
     await this.lavalink.play(voiceChannel, track)
     res.status(201).send({ success: true })

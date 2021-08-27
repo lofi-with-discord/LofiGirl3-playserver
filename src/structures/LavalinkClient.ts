@@ -37,7 +37,9 @@ export default class LavalinkClient extends Manager {
     const res = await get(url.toString())
       .set('Authorization', node.password)
 
-    const trackData = res.body.tracks[0].track
+    const trackData = res.body.tracks?.[0]?.track
+    if (!trackData) return ''
+
     this.trackCache[search] = trackData
 
     return trackData

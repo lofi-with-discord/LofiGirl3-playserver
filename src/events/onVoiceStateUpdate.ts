@@ -31,6 +31,7 @@ export default function onVoiceStateUpdate (lavalink: LavalinkClient, db: Databa
       if (isHere) return
       const theme = await db.getThemeURL(newState.channel)
       const track = await lavalink.getTrack(theme)
+      if (!track) return
 
       lavalink.play(newState.channel, track)
       return
@@ -53,6 +54,8 @@ export default function onVoiceStateUpdate (lavalink: LavalinkClient, db: Databa
       if (isHere2) return
       const theme = await db.getThemeURL(newState.channel)
       const track = await lavalink.getTrack(theme)
+      if (!track) return
+
       lavalink.play(newState.channel, track)
     }
   }

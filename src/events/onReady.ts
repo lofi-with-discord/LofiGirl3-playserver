@@ -20,6 +20,8 @@ export default function onReady (lavalink: LavalinkClient, db: DatabaseClient) {
 
         const theme = await db.getThemeURL(voiceChannel)
         const track = await lavalink.getTrack(theme)
+        if (!track) continue
+
         lavalink.play(voiceChannel, track)
       }
 
