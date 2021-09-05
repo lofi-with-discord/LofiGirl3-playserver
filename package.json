@@ -25,11 +25,13 @@
   "dependencies": {
     "-": "^0.0.1",
     "@lavacord/discord.js": "^0.0.7",
+    "@pm2/io": "^5.0.0",
     "@types/express": "^4.17.13",
     "@types/superagent": "^4.1.12",
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "form-data": "^4.0.0",
     "knex": "^0.95.7",
     "lavacord": "^1.1.9",
     "mysql": "^2.18.1",
