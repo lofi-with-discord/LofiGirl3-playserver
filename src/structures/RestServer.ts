@@ -1,3 +1,4 @@
+import pm2 from '@pm2/io'
 import dotenv from 'dotenv'
 import BotClient from './BotClient'
 import DatabaseClient from './DatabaseClient'
@@ -6,6 +7,7 @@ import express, { Application, Request, Response, NextFunction } from 'express'
 import { VoiceChannel } from 'discord.js'
 
 dotenv.config()
+const restFrequency = pm2.meter({ name: 'req/sec', id: 'app/events/rest' })
 
 export default class RestServer {
   private app: Application
@@ -35,6 +37,7 @@ export default class RestServer {
     const { authorization } = req.headers
 
     if (authorization === process.env.CONTROL_PASSWORD) {
+      restFrequency.mark()
       return next()
     }
 

@@ -1,10 +1,15 @@
+import pm2 from '@pm2/io'
 import { VoiceState } from 'discord.js'
 import BotClient from '../structures/BotClient'
 import DatabaseClient from '../structures/DatabaseClient'
 import LavalinkClient from '../structures/LavalinkClient'
 
+const eventFrequency = pm2.meter({ name: 'events/sec', id: 'app/events/voicestate' })
+
 export default function onVoiceStateUpdate (lavalink: LavalinkClient, db: DatabaseClient) {
   return async function (client: BotClient, oldState: VoiceState, newState: VoiceState) {
+    eventFrequency.mark()
+
     if (oldState.member?.user.bot) return
     if (newState.member?.user.bot) return
 
