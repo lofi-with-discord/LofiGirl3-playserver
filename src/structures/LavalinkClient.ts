@@ -50,6 +50,7 @@ export default class LavalinkClient extends Manager {
     setTimeout(async () => {
       const player = await this.join({ guild: channel.guild.id, channel: channel.id, node: 'main' })
       await player.play(track)
+      player.once('end', (data) => data.reason === 'FINISHED' && this.play(channel, track))
     }, 1000)
   }
 
