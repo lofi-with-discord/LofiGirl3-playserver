@@ -4,13 +4,13 @@ import LavalinkClient from '../structures/LavalinkClient'
 
 export default function onReady (lavalink: LavalinkClient, db: DatabaseClient) {
   return async function (client: BotClient) {
-    const guilds = client.guilds.cache.filter((g) => !!g.voice)
+    const guilds = client.guilds.cache.filter((g) => !!g.me?.voice)
 
     lavalink.on('ready', async () => {
       for (const [, guild] of guilds) {
-        if (!guild.voice?.channel) continue
+        if (!guild.me?.voice?.channel) continue
 
-        const voiceChannel = guild.voice.channel
+        const voiceChannel = guild.me?.voice.channel
         const membersIn = voiceChannel.members.filter((m) => !m.user.bot).size
 
         if (membersIn < 1) {

@@ -3,7 +3,7 @@ import BotClient from './BotClient'
 import DatabaseClient from './DatabaseClient'
 import LavalinkClient from './LavalinkClient'
 import express, { Application, Request, Response, NextFunction } from 'express'
-import { VoiceChannel } from 'discord.js'
+import { StageChannel, VoiceChannel } from 'discord.js'
 
 dotenv.config()
 
@@ -56,13 +56,13 @@ export default class RestServer {
       return
     }
 
-    const voiceChannel = this.bot.channels.resolve(channel) as VoiceChannel
+    const voiceChannel = this.bot.channels.resolve(channel) as VoiceChannel | StageChannel
     if (!voiceChannel) {
       res.status(400).send({ success: false, message: 'channel not valid' })
       return
     }
 
-    if (voiceChannel.type !== 'voice') {
+    if (!['GUILD_VOICE', 'GUILD_STAGE_VOICE'].includes(voiceChannel.type)) {
       res.status(400).send({ success: false, message: 'channel not valid' })
       return
     }
@@ -82,13 +82,13 @@ export default class RestServer {
       return
     }
 
-    const voiceChannel = this.bot.channels.resolve(channel) as VoiceChannel
+    const voiceChannel = this.bot.channels.resolve(channel) as VoiceChannel | StageChannel
     if (!voiceChannel) {
       res.status(400).send({ success: false, message: 'channel not valid' })
       return
     }
 
-    if (voiceChannel.type !== 'voice') {
+    if (!['GUILD_VOICE', 'GUILD_STAGE_VOICE'].includes(voiceChannel.type)) {
       res.status(400).send({ success: false, message: 'channel not valid' })
       return
     }

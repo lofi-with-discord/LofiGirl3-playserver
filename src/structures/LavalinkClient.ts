@@ -1,8 +1,8 @@
 import dotenv from 'dotenv'
 import { get } from 'superagent'
 import BotClient from './BotClient'
-import { VoiceChannel } from 'discord.js'
 import { Manager } from '@lavacord/discord.js'
+import { StageChannel, VoiceChannel } from 'discord.js'
 
 dotenv.config()
 
@@ -20,11 +20,13 @@ export default class LavalinkClient extends Manager {
     super(client, [nodeConfig])
 
     this.trackCache = {}
-    client.once('ready', () =>
-      this.connect().catch(() => {
-        console.log('cannot resolve lavalink instance')
-        process.exit(1)
-      }))
+    client.once('ready', () => {
+      this.connect()
+        .catch(() => {
+          console.log('cannot resolve lavalink instance')
+          process.exit(1)
+        })
+    })
   }
 
   public async getTrack (search: string) {
@@ -45,16 +47,31 @@ export default class LavalinkClient extends Manager {
     return trackData
   }
 
-  public async play (channel: VoiceChannel, track: string) {
+  public async play (channel: VoiceChannel | StageChannel, track: string) {
     await this.stop(channel)
     setTimeout(async () => {
       const player = await this.join({ guild: channel.guild.id, channel: channel.id, node: 'main' })
       await player.play(track)
       player.once('end', (data) => data.reason === 'FINISHED' && this.play(channel, track))
+
+      setTimeout(async () => {
+        if (channel.type === 'GUILD_STAGE_VOICE') {
+          if (!channel.stageInstance) {
+            await channel.createStageInstance({ topic: 'Lo-Fi' })
+          }
+
+          await channel.guild.me?.voice.setSuppressed(false).catch(() => {
+            channel.guild.me?.voice.setRequestToSpeak(true).catch(() => {})
+          })
+        }
+      }, 1000)
     }, 1000)
   }
 
-  public async stop (channel: VoiceChannel) {
+  public async stop (channel: VoiceChannel | StageChannel) {
     await this.leave(channel.guild.id)
+    if (channel.type === 'GUILD_STAGE_VOICE' && channel.members.filter((v) => !v.user.bot).size < 1 && channel.stageInstance) {
+      await channel.stageInstance.delete().catch(() => {})
+    }
   }
 }

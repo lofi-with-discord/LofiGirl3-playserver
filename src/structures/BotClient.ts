@@ -5,7 +5,7 @@ dotenv.config()
 
 export default class BotClient extends Client {
   constructor () {
-    super()
+    super({ intents: ['GUILDS', 'GUILD_VOICE_STATES'] })
 
     this.token = process.env.DISCORD_TOKEN!
     this.login()

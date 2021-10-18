@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 import knex, { Knex } from 'knex'
-import { VoiceChannel } from 'discord.js'
+import { StageChannel, VoiceChannel } from 'discord.js'
 
 dotenv.config()
 
@@ -21,7 +21,7 @@ export default class DatabaseClient {
     })
   }
 
-  public async getThemeURL (channel: VoiceChannel): Promise<string> {
+  public async getThemeURL (channel: VoiceChannel | StageChannel): Promise<string> {
     const [{ theme } = []] = await this.db.select('theme').where('guild', channel.guild.id).from('channels').limit(1)
     const [{ url } = []] = await this.db.select('url').where('id', theme || 1).from('themes').limit(1)
 
@@ -34,6 +34,6 @@ export default class DatabaseClient {
     return this.markCache
   }
 
-  public isMarked = (channel: VoiceChannel) =>
+  public isMarked = (channel: VoiceChannel | StageChannel) =>
     this.markCache.includes(channel.id)
 }
