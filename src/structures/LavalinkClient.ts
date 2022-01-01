@@ -52,19 +52,16 @@ export default class LavalinkClient extends Manager {
     setTimeout(async () => {
       const player = await this.join({ guild: channel.guild.id, channel: channel.id, node: 'main' })
       await player.play(track)
+
       player.once('end', (data) => data.reason === 'FINISHED' && this.play(channel, track))
 
-      setTimeout(async () => {
-        if (channel.type === 'GUILD_STAGE_VOICE') {
-          if (!channel.stageInstance) {
-            await channel.createStageInstance({ topic: 'Lo-Fi' })
-          }
-
-          await channel.guild.me?.voice.setSuppressed(false).catch(() => {
-            channel.guild.me?.voice.setRequestToSpeak(true).catch(() => {})
-          })
-        }
-      }, 1000)
+      if (channel.type !== 'GUILD_STAGE_VOICE') return
+      player.once('start', async () => {
+        await channel.createStageInstance({ topic: 'Lo-Fi' }).catch(() => {})
+        await channel.guild.me?.voice.setSuppressed(false).catch(() => {
+          channel.guild.me?.voice.setRequestToSpeak(true).catch(() => {})
+        })
+      })
     }, 1000)
   }
 
