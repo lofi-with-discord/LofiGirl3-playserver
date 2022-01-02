@@ -61,9 +61,9 @@ export default class LavalinkClient extends Manager {
       if (channel.type !== 'GUILD_STAGE_VOICE') return
       player.once('start', async () => {
         await channel.createStageInstance({ topic: 'Lo-Fi' }).catch(() => {})
-        await (await channel.guild.members.fetch(channel.guild.me?.id!)).voice.setSuppressed(false).catch((e) => {
+        await channel.guild.me?.voice.setSuppressed(false).catch((e) => {
           console.log(e)
-          channel.guild.me?.voice.setRequestToSpeak(true).catch(() => {})
+          channel.guild.me?.voice.setRequestToSpeak(true).catch(console.log)
         })
       })
     }, 1000)
