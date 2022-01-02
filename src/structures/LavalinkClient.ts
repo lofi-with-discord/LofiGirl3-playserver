@@ -58,14 +58,17 @@ export default class LavalinkClient extends Manager {
 
       player.once('end', (data) => data.reason === 'FINISHED' && this.play(channel, track))
 
-      if (channel.type !== 'GUILD_STAGE_VOICE') return
-      player.once('start', async () => {
-        await channel.createStageInstance({ topic: 'Lo-Fi' }).catch(() => {})
-        await channel.guild.me?.voice.setSuppressed(false).catch((e) => {
-          console.log(e)
-          channel.guild.me?.voice.setRequestToSpeak(true).catch(console.log)
-        })
-      })
+      player.once('start', () =>
+        setTimeout(async () => {
+          const me = await channel.guild.members.fetch(this.client?.user?.id!)
+          console.log('c == ', me.voice.channel?.type)
+
+          await me.voice.setSuppressed(false).catch(() =>
+            me.voice.setRequestToSpeak(true).catch(() => {}))
+
+          if (channel.type !== 'GUILD_STAGE_VOICE') return
+          await channel.createStageInstance({ topic: 'Lo-Fi' }).catch(() => {})
+        }, 1000))
     }, 1000)
   }
 
