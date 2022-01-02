@@ -9,7 +9,6 @@ export default function onVoiceStateUpdate (lavalink: LavalinkClient, db: Databa
     if (newState.member?.user.bot) return
 
     if (oldState.channel && !newState.channel) {
-      console.log('Leaving: ' + oldState.channel.id)
       const members = oldState.channel.members
       const isHere = members.find((member) => member.id === client.user?.id)
       const many = members.filter((member) => !member.user.bot).size
@@ -21,7 +20,6 @@ export default function onVoiceStateUpdate (lavalink: LavalinkClient, db: Databa
     }
 
     if (!oldState.channel && newState.channel) {
-      console.log('Joining: ' + newState.channel.id)
       const isMarked = db.isMarked(newState.channel)
       if (!isMarked) return
 
@@ -38,7 +36,6 @@ export default function onVoiceStateUpdate (lavalink: LavalinkClient, db: Databa
     }
 
     if (oldState.channel && newState.channel && oldState.channel.id !== newState.channel.id) {
-      console.log('Moving: ' + oldState.channel.id + ' -> ' + newState.channel.id)
       const members = oldState.channel.members
       const isHere = members.find((member) => member.id === client.user?.id)
       const many = members.filter((member) => !member.user.bot).size
