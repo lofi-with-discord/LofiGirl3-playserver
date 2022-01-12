@@ -31,7 +31,7 @@ export default class LavalinkClient extends Manager {
 
   public async getTrack (search: string) {
     if (this.trackCache[search]) return this.trackCache[search]
-    console.log('s :: ', search)
+    console.log(this.client.shard?.ids?.[0], 's :: ', search)
 
     const node = this.idealNodes[0]
     const url = new URL(`http://${node.host}:${node.port}/loadtracks`)
@@ -50,7 +50,7 @@ export default class LavalinkClient extends Manager {
 
   public async play (channel: VoiceChannel | StageChannel, track: string) {
     await this.stop(channel, true)
-    console.log('p -> ', channel.id)
+    console.log(this.client.shard?.ids?.[0], 'p -> ', channel.id)
 
     setTimeout(async () => {
       const player = await this.join({ guild: channel.guild.id, channel: channel.id, node: 'main' })
@@ -85,7 +85,7 @@ export default class LavalinkClient extends Manager {
   }
 
   public async stop (channel: VoiceChannel | StageChannel, fromPlay = false) {
-    if (!fromPlay) console.log('l <- ', channel.id)
+    if (!fromPlay) console.log(this.client.shard?.ids?.[0], 'l <- ', channel.id)
 
     await this.leave(channel.guild.id)
     if (channel.type === 'GUILD_STAGE_VOICE' && channel.members.filter((v) => !v.user.bot).size < 1 && channel.stageInstance) {

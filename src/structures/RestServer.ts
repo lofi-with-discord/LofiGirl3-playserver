@@ -45,6 +45,7 @@ export default class RestServer {
     res.status(200).send({ success: true })
 
   private async deleteCache (_: Request, res: Response) {
+    console.log(this.bot.shard?.ids?.[0], 'r !! delete cache')
     await this.db.fetchMarkedChannels()
     res.status(200).send({ success: true })
   }
@@ -66,6 +67,8 @@ export default class RestServer {
       res.status(400).send({ success: false, message: 'channel not valid' })
       return
     }
+
+    console.log(this.bot.shard?.ids?.[0], 'r !! create connection', voiceChannel.id)
 
     const theme = await this.db.getThemeURL(voiceChannel)
     const track = await this.lavalink.getTrack(theme)
@@ -92,6 +95,8 @@ export default class RestServer {
       res.status(400).send({ success: false, message: 'channel not valid' })
       return
     }
+
+    console.log(this.bot.shard?.ids?.[0], 'r !! delete connection', voiceChannel.id)
 
     await this.lavalink.stop(voiceChannel)
     res.status(200).send({ success: true })
